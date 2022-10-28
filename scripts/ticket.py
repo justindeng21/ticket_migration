@@ -6,8 +6,8 @@ comments_data = pandas.read_csv('../data/comments.csv')
 cases_data = pandas.read_csv('../data/cases.csv')
 attachments_data = pandas.read_csv('../data/attachments.csv')
 
-user = 'justin.deng@crownpeak.com'
-pwd = 'Deng817678!'
+user = '-'
+pwd = '-'
 
 def zendesk_query(query):
     
