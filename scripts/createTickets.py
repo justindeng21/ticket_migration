@@ -2,8 +2,8 @@ import pandas
 import requests 
 import json
 
-user = 'justin.deng@crownpeak.com'
-pwd = 'Deng817678!'
+user = '-'
+pwd = '-'
 
 def pretty(d, indent=0):
    for key, value in d.items():
