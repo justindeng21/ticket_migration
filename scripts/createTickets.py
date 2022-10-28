@@ -2,6 +2,9 @@ import pandas
 import requests 
 import json
 
+user = '-'
+pwd = '-!'
+
 def pretty(d, indent=0):
    for key, value in d.items():
       print('\t' * indent + str(key).replace("\n"," "))
@@ -16,8 +19,7 @@ cases_data = pandas.read_csv('../data/cases.csv')
 attachments_data = pandas.read_csv('../data/attachments.csv')
 
 def zendesk_query(query):
-    user = 'justin.deng@crownpeak.com'
-    pwd = 'Deng817678!'
+    
     url = 'https://crownpeaksupport1663789408.zendesk.com/api/v2/users/search.json?query=' + query
     response = requests.get(url, auth=(user, pwd))
 
@@ -142,8 +144,6 @@ class Ticket:
         return date
 
     def construct_payload(self):
-        user = 'justin.deng@crownpeak.com'
-        pwd = 'Deng817678!'
         date = self.date_split()
         jira_id = '' 
         version = ''
@@ -367,8 +367,6 @@ def create_ticket_dictionary(cases_, comments_, attachments_):
 def main():
     tickets, case_ids = create_ticket_dictionary(cases_data,comments_data,attachments_data)
 
-    user = 'justin.deng@crownpeak.com'
-    pwd = 'Deng817678!'
     headers = {'content-type': 'application/json'}
     url = 'https://crownpeaksupport1663789408.zendesk.com/api/v2/imports/tickets/create_many'
 
