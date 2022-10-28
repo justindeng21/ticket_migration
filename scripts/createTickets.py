@@ -3,7 +3,7 @@ import requests
 import json
 
 user = '-'
-pwd = '-!'
+pwd = '-'
 
 def pretty(d, indent=0):
    for key, value in d.items():
