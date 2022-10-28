@@ -1,2 +1,3 @@
 # ticket_migration
-Migration of Legacy Salesforce tickets to JIRA
+Valid credentials are needed
+Migration of Legacy Salesforce tickets to Zendesk
