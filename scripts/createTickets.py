@@ -2,8 +2,8 @@ import pandas
 import requests 
 import json
 
-user = '-'
-pwd = '-'
+user = 'justin.deng@crownpeak.com'
+pwd = 'Deng817678!'
 
 def pretty(d, indent=0):
    for key, value in d.items():
@@ -205,7 +205,7 @@ class Ticket:
         description_comment = {
             "author_id": '7431029297309',
             "created_at": self.date_split_2(),
-            "value":"**Description:** " + description
+            "value":"Description:"+ '\n' + description
             
         }
 
@@ -237,7 +237,7 @@ class Ticket:
             comment =  {
                 "author_id": id,
                 "created_at": comment_data.date_split(),
-                "value":"**Comment:** "+ comment_data.get_comment_col('Case Comments')
+                "value":"Comment: " + '\n' + comment_data.get_comment_col('Case Comments')
                 }
 
             comments_.append(comment)
