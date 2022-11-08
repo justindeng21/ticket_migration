@@ -6,15 +6,25 @@ comments_data = pandas.read_csv('../data/comments.csv')
 cases_data = pandas.read_csv('../data/cases.csv')
 attachments_data = pandas.read_csv('../data/attachments.csv')
 
-user = '-'
-pwd = '-'
+user = 'justin.deng@crownpeak.com'
+pwd = 'Deng817678!'
+
+def pretty(d, indent=0):
+   for key, value in d.items():
+      print('\t' * indent + str(key).replace("\n"," "))
+      if isinstance(value, dict):
+         pretty(value, indent+1)
+      else:
+         print('\t' * (indent+1) + str(value).replace("\n"," \ "))
+
+
 
 def zendesk_query(query):
-    
     url = 'https://crownpeaksupport1663789408.zendesk.com/api/v2/users/search.json?query=' + query
     response = requests.get(url, auth=(user, pwd))
 
     if response.status_code != 200:
+        print(query,'not found in system')
         exit()
 
     return response.json()['users'][0]['id'], response.json()['users'][0]['email']
@@ -24,29 +34,24 @@ def fetch_user_data(cases):
 
     user_ids = {}
     for index, row_case in cases.iterrows():
-        
-        try:
-            if row_case['Case Owner'].split('@')[1] == 'e-spirit.com' or row_case['Case Owner'].split('@')[1] == 'crownpeak.com':
-                query = row_case['Case Owner'].split('@')[0]+'@test.com'
-        except:
-            query = row_case['Case Owner']
-        
-        user_id, user_email = zendesk_query(query)
-        user_ids[user_email] = user_id
-
-
-    for index, row_case in cases.iterrows():
+        query = row_case['Case Owner']
 
         try:
-            if row_case['Contact: Email'].split('@')[1] == 'llbean.com':
-                query = row_case['Contact: Email'].split('@')[0]+'@fake.com'
+            user_ids[query]
         except:
-            query = row_case['Contact: Email']
-        
-        user_id, user_email = zendesk_query(query)
-        user_ids[user_email] = user_id
-        
 
+        
+            user_id, user_email = zendesk_query(query)
+            user_ids[user_email] = user_id
+
+        query = row_case['Contact: Email']
+        try:
+            user_ids[query]
+        except:
+            
+            user_id, user_email = zendesk_query(query)
+            user_ids[user_email] = user_id
+            
     return user_ids
 
 user_ids = fetch_user_data(cases_data)
@@ -207,14 +212,8 @@ class Ticket:
             comments_.append(attachment_commet)
 
         for comment_data in comments:
-            
-            try:
-                if comment_data.get_comment_col('Case Comment Created By').split('@')[1] =="e-spirit.com" or comment_data.get_comment_col('Case Comment Created By').split('@')[1] =="crownpeak.com":
-                    user_ = comment_data.get_comment_col('Case Comment Created By').split('@')[0]+'@test.com'
-                else:
-                    user_ = comment_data.get_comment_col('Case Comment Created By').split('@')[0]+'@fake.com'
-            except:
-                user_ = comment_data.get_comment_col('Case Comment Created By')
+        
+            user_ = comment_data.get_comment_col('Case Comment Created By')
             
             try:
                 id = user_ids[user_]
@@ -229,22 +228,18 @@ class Ticket:
                 }
 
             comments_.append(comment)
-
-
-
-
+            
         assignee_id = 0
         requester_id = 0
         try:
-            assignee_id = user_ids[self.get_case_col('Case Owner').split('@')[0]+'@test.com']
+            assignee_id = user_ids[self.get_case_col('Case Owner')]
         except:
             assignee_id,email = zendesk_query(self.get_case_col('Case Owner'))
 
-
         try:
-            requester_id = user_ids[self.get_case_col('Contact: Email').split('@')[0]+'@fake.com']
+            requester_id = user_ids[self.get_case_col('Contact: Email')]
         except:
-            assignee_id,email = zendesk_query(self.get_case_col('Contact: Email'))
+            requester_id,email = zendesk_query(self.get_case_col('Contact: Email'))
 
         
         case_data = {
@@ -271,16 +266,10 @@ class Ticket:
                     {'id':7247359071901, 'value': version},                           #product version
 
                     {'id':7247436551581, 'value': date}                               #date
-
-
-                                ]
+                    ]
                 }}
+
         self.payload = case_data
-
-
-
-
-        
         return self.payload
 
 
